@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const FormModel = require("../models/form-model");
 const { ObjectId } = require("mongodb");
+const SlotModel = require("../models/slot-model");
 
 module.exports = {
   adminLogin: (data) => {
@@ -45,7 +46,17 @@ module.exports = {
         reject();
       }
     });
-  },pending:(formId)=>{
+  },getCompanyDetails:(formId)=>{
+    return new Promise(async(resolve,reject)=>{
+      try{
+      let companyDetails = await FormModel.findOne({_id:ObjectId(formId)})
+      resolve(companyDetails)
+      }catch(err){
+        reject(err)
+      }
+    })
+  },
+  pending:(formId)=>{
     return new Promise (async(resolve,reject)=>{
         try{
     const response =  await FormModel.updateOne({_id:ObjectId(formId)},{$set:{status:'pending'}})
@@ -72,5 +83,40 @@ module.exports = {
               reject()
           }
       })
+  },getAllSlots:()=>{
+    return new Promise (async(resolve,reject)=>{
+      try{
+        let slots = await SlotModel.find({})
+        resolve(slots)
+      }catch(err){
+        reject()
+      }
+    })
+  },
+  bookSlot : (slotId,companyId)=>{
+    return new Promise (async(resolve,reject)=>{
+      try{
+    let response = await SlotModel.updateOne(
+      {_id:ObjectId(slotId)},
+      {$set:{selected:true,companyId:companyId}}) 
+      resolve(response) 
+      }catch(err){
+        reject()
+      }
+    })
+  },
+  bookCompany : (companyId) =>{
+    return new Promise (async(resolve,reject)=>{
+      try{
+        let response = await FormModel.updateOne(
+          {_id:ObjectId(companyId)},
+          {$set:{selected:true}}
+        )
+          console.log(response);
+          resolve(response)
+      }catch(err){
+        reject()
+      }
+    })
   }
 };

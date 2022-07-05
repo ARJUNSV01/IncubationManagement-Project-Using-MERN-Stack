@@ -68,6 +68,16 @@ router.get('/newapplication',async(req,res)=>{
 res.status(400).json({status:'No data available'})
   }
 })
+router.get('/getcompanydetails/:id',(req,res)=>{
+  console.log(req.params.id);
+ adminHelper.getCompanyDetails(req.params.id).then((companyDetails)=>{
+   res.status(200).json(companyDetails)
+ }).catch((err)=>{
+   res.status(400).json({status:'error'})
+ })
+
+})
+
 router.post('/pending',checktoken,(req,res)=>{
   console.log(req.body);
 const formId = req.body._id
@@ -103,4 +113,53 @@ router.post('/decline',checktoken,(req,res)=>{
   })
 
 })
+router.get('/getslots',(req,res)=>{
+  try{
+    adminHelper.getAllSlots().then((slots)=>{
+      const slotA = slots.filter((slot)=>{
+        return slot.section === 'A'
+      })
+      const slotB = slots.filter((slot)=>{
+        return slot.section === 'B'
+      })
+      const slotC = slots.filter((slot)=>{
+        return slot.section === 'C'
+      })
+      const slotD = slots.filter((slot)=>{
+        return slot.section === 'D'
+      })
+      const slotE = slots.filter((slot)=>{
+        return slot.section === 'E'
+      })
+
+      let response ={
+        A:slotA,
+        B:slotB,
+        C:slotC,
+        D:slotD,
+        E:slotE,
+        
+      }
+      res.status(200).json(response)
+
+    })
+  }catch(err){
+    res.status(400).json({status:'err'})
+  }
+})
+
+router.post('/selectcompany',(req,res)=>{
+  try{
+  slotId = req.body._id
+  companyId = req.body.company
+  adminHelper.bookSlot(slotId,companyId).then((response)=>{
+    adminHelper.bookCompany(companyId).then((response)=>{
+      res.status(200).json(response)
+    })
+  })
+}catch(err){
+  res.status(400).json({status:'error'})
+}
+})
+
 module.exports = router;

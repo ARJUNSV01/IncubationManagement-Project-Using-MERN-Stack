@@ -53,6 +53,7 @@ router.post('/submitform',async(req,res)=>{
     if(req.files.logo){
       let image = req.files.logo
      image.mv("./public/images/Logos/" + id + ".jpg");
+     
     }
    return res.status(200).json({ status:'ok',success: 'form submitted successfully' })
   }else{

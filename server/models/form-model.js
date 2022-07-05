@@ -19,7 +19,8 @@ const Form =new mongoose.Schema({
         plan: {type:String,required:true},
         type: {type:String,required:true},
         businessproposal: {type:String,required:true},
-        status:{type:String}
+        status:{type:String},
+        selected:{type:Boolean}
 },{collection:'form-data'})
 
 const FormModel = mongoose.model('form-data',Form)
