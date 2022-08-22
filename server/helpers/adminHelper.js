@@ -21,7 +21,9 @@ module.exports = {
               email: admin.email,
               id: admin._id,
             },
-            "secret1234567"
+            "secret1234567",{
+              expiresIn:'30m'
+            }
           );
           response.admintoken = token;
           resolve(response);
